@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+// components
+import WorkoutDetails from "../components/WorkoutDetails";
 
 export const Home = () => {
+  const [workouts, setWorkouts] = useState(null);
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      const response = await fetch("/api/workouts"); // make as proxy in package.json
+      // "proxy":"http://localhost:4000"
+      const json = await response.json();
+      if (response.ok) {
+        setWorkouts(json);
+      }
+    };
+    fetchWorkouts();
+  }, []);
   return (
     <div className="home">
-      <h2> Home</h2>
+      <div className="workouts">
+        {workouts &&
+          workouts.map((workout) => (
+            <WorkoutDetails key={workout._id} workout={workout} />
+          ))}
+      </div>
     </div>
   );
 };
